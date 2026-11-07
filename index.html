@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UniLink Team Structure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F1;--surface:#FFFFFF;--surface2:#F6F9F8;--line:#D3DEDB;
+  --text:#10262C;--muted:#56696E;--ink:#0D2B33;
+  --lead:#0D2B33;--biz:#B9851F;--biz-soft:#FBF1DC;--it:#2F6FDB;--it-soft:#E3ECFC;
+  --wire:#9FB3B0;--gold:#E8C76A;
+  --display:'Unbounded','Arial Black',system-ui,sans-serif;--body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C2026;--surface:#14313A;--surface2:#183942;--line:#2A4C55;--text:#E6EFEC;--muted:#A3B8B9;
+  --lead:#E8C76A;--biz:#E8B94F;--biz-soft:#2E2A1C;--it:#7FAEFF;--it-soft:#1B2E4D;--wire:#4C6B72;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C2026;--surface:#14313A;--surface2:#183942;--line:#2A4C55;--text:#E6EFEC;--muted:#A3B8B9;
+  --lead:#E8C76A;--biz:#E8B94F;--biz-soft:#2E2A1C;--it:#7FAEFF;--it-soft:#1B2E4D;--wire:#4C6B72;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:10px}
+
+/* top bar */
+.bar{flex:none;background:#0D2B33;color:#E9F0EE;padding:16px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:600;font-size:18px;white-space:nowrap}
+.brand b{color:var(--gold);font-weight:600}
+.brand small{font-family:var(--body);font-weight:500;font-size:14px;opacity:.75;margin-left:8px}
+.stats{display:flex;gap:18px;font-size:14px;color:#B9CDCE}
+.stats b{color:#fff;font-family:var(--display);font-weight:600;margin-right:4px}
+.search{margin-left:auto;position:relative}
+.search input{width:240px;border:0;border-radius:999px;padding:10px 16px 10px 38px;font:inherit;font-size:15px;background:#14404A;color:#fff}
+.search input::placeholder{color:#9DB6B8}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.7}
+.view3d{border:2px solid #3E6B75;background:transparent;color:#E9F0EE;border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px}
+.view3d[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#1B1606}
+
+/* streams */
+.streams{flex:none;display:flex;gap:10px;align-items:center;padding:14px 24px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.streams span.l{font-size:14px;font-weight:600;color:var(--muted);margin-right:4px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center}
+.chip i{font-style:normal;font-size:12px;background:var(--surface2);border-radius:999px;padding:1px 8px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.chip[aria-pressed="true"] i{background:rgba(255,255,255,.2);color:inherit}
+
+/* canvas */
+.viewport{flex:1;overflow:auto;position:relative;perspective:1600px}
+.stage{position:relative;margin:0 auto;padding:40px 32px 80px;width:max-content;min-width:100%;display:flex;flex-direction:column;align-items:center;gap:46px;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.is3d .stage *{transform-style:preserve-3d}
+#wires{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:1}
+svg.w path{fill:none;stroke:var(--wire);stroke-width:2.6;transition:stroke .3s,opacity .3s,stroke-width .3s}
+svg.w path.dot{stroke-dasharray:6 7}
+svg.w path.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1s ease forwards}
+svg.w path.dot.draw{animation:drawdot 1s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+svg.w circle.pulse{fill:var(--gold);opacity:.9}
+svg.w circle.pulse.fade{opacity:.1}
+@keyframes drawdot{from{opacity:0}to{opacity:1}}
+svg.w path.hot{stroke:var(--gold);stroke-width:3.5}
+svg.w path.fade{opacity:.18}
+.lvl{display:flex;gap:16px;justify-content:center;position:relative}
+.tagline{font-size:13px;font-weight:600;color:var(--muted);text-align:center;margin-top:-34px}
+.groups{display:flex;gap:28px;align-items:flex-start;position:relative}
+.grp{position:relative;border-radius:24px;padding:20px 24px 26px;display:flex;flex-direction:column;align-items:center;gap:40px;border:1.5px solid var(--line);background:var(--surface2)}
+.grp.biz{background:var(--biz-soft);border-color:color-mix(in srgb,var(--biz) 35%,transparent)}
+.grp.it{background:var(--it-soft);border-color:color-mix(in srgb,var(--it) 35%,transparent)}
+.grp h2,.grp .sub{position:relative;z-index:2;background:inherit;padding:2px 10px;border-radius:8px}
+.grp.biz h2,.grp.biz .sub{background:var(--biz-soft)}.grp.it h2,.grp.it .sub{background:var(--it-soft)}
+.grp h2{order:9;}.grp .sub{order:10}
+.grp h2{margin:0;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.01em;text-align:center;max-width:30ch}
+.grp.biz h2{color:var(--biz)}.grp.it h2{color:var(--it)}
+.grp .sub{font-size:13px;color:var(--muted);margin-top:-36px;text-align:center}
+.grp h2{margin-top:-6px!important}
+.also{font-size:13px;color:var(--muted);margin-top:-18px}
+.also button{border:0;background:none;padding:0;font-weight:600;color:var(--text);text-decoration:underline}
+
+/* cards */
+.card{position:relative;z-index:2;width:236px;border:1.5px solid var(--line);background:var(--surface);border-radius:18px;padding:16px;text-align:left;display:flex;gap:12px;align-items:center;box-shadow:0 1px 0 rgba(0,0,0,.03);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .3s,opacity .35s,border-color .3s;opacity:0;animation:pop .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.card:hover{box-shadow:0 14px 30px rgba(13,43,51,.14);border-color:var(--wire)}
+.card .av{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:15px;color:#fff;background:var(--c)}
+.card .nm{font-weight:600;font-size:15.5px;line-height:1.25}
+.card .tt{font-size:13px;color:var(--muted);line-height:1.35;margin-top:3px}
+.card .badge{position:absolute;top:-11px;right:14px;font-size:11px;font-weight:700;background:var(--gold);color:#1B1606;border-radius:999px;padding:3px 10px;letter-spacing:.02em}
+.card.ceo{width:270px;border-color:transparent;background:#0D2B33;color:#E9F0EE}
+.card.ceo .tt{color:#B9CDCE}
+.card.dep{width:270px;border:2px solid var(--gold)}
+.card.lead{border-width:2px}
+.biz .card.lead{border-color:var(--biz)}.it .card.lead{border-color:var(--it)}
+.card.dim{opacity:.22!important}
+.card.match{box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 70%,transparent)}
+.card.sel{box-shadow:0 0 0 4px var(--gold),0 16px 34px rgba(13,43,51,.2)}
+
+/* 3D mode */
+.is3d .stage{transform:rotateX(var(--rx,28deg)) rotateZ(var(--rz,-8deg)) scale(.82);cursor:grab}
+.is3d .card{box-shadow:0 18px 30px rgba(13,43,51,.25)}
+.is3d .z0{transform:translateZ(150px)}.is3d .z1{transform:translateZ(110px)}.is3d .z2{transform:translateZ(70px)}.is3d .z3{transform:translateZ(40px)}.is3d .z4{transform:translateZ(18px)}
+.is3d .grp{box-shadow:0 30px 60px rgba(13,43,51,.18)}
+.hint3d{position:absolute;left:20px;bottom:18px;font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;display:none}
+.is3d .hint3d{display:block}
+
+/* view switch */
+.seg{display:flex;gap:6px}
+.orbit{display:none;position:absolute;inset:0;overflow:hidden}
+.is-orbit .orbit{display:block}
+.is-orbit .stage{display:none}
+.ospin{position:absolute;left:50%;top:50%;width:1180px;height:1180px;transform-origin:0 0}
+#owires{position:absolute;inset:0;width:1180px;height:1180px;overflow:visible}
+.ring{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 9}
+.ringlbl{font-size:17px;fill:var(--muted);font-weight:600}
+.spin{transform-origin:590px 590px;animation:spin 140s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.onode{position:absolute;width:190px;margin-left:-95px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:opacity .35s,transform .35s;z-index:2;opacity:0;animation:pop .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+.onode .ob{width:var(--s,66px);height:var(--s,66px);border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:600;font-size:calc(var(--s,66px)*.28);background:var(--c);box-shadow:0 0 0 6px var(--bg),0 0 0 8px color-mix(in srgb,var(--c) 45%,transparent),0 12px 26px rgba(13,43,51,.22);transition:transform .3s}
+.onode:hover .ob{transform:scale(1.08)}
+.onode .on{font-weight:600;font-size:19px;line-height:1.25;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 9px}
+.onode .ot{font-size:15px;color:var(--muted);line-height:1.3;margin-top:-4px;max-width:190px}
+.onode.dim{opacity:.18!important}
+.onode.match .ob,.onode.sel .ob{box-shadow:0 0 0 6px var(--bg),0 0 0 10px var(--gold),0 12px 26px rgba(13,43,51,.22)}
+.is-orbit .legend,.is-orbit .hint3d{display:none}
+@media (max-width:980px){.seg{display:none}}
+
+/* departments */
+.deptbtn{order:11;margin-top:-26px;border:1.5px solid currentColor;background:var(--surface);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center;position:relative;z-index:2}
+.biz .deptbtn{color:var(--biz)}.it .deptbtn{color:var(--it)}
+.deptbtn:hover{background:var(--surface2)}
+.grp{cursor:pointer;transition:box-shadow .3s}
+.grp:hover{box-shadow:0 0 0 3px color-mix(in srgb,var(--wire) 50%,transparent)}
+.dots{display:flex;gap:4px;margin-top:7px}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--sc)}
+.chip b.sd{width:9px;height:9px;border-radius:50%;background:var(--sc);display:inline-block}
+.mem{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface2);border-radius:14px;padding:10px 12px}
+.mem:hover{border-color:var(--wire)}
+.mem .av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:600;font-size:13px;background:var(--c)}
+.mem .nm{font-weight:600;font-size:15px}.mem .rl{font-size:13.5px;color:var(--muted);line-height:1.35}
+.mem .tg{margin-left:auto;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--gold);color:#1B1606;white-space:nowrap}
+.mem .tg.also{background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.mlist{display:flex;flex-direction:column;gap:8px}
+.srow{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.4;padding:8px 0;border-top:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;width:100%}
+.srow i{flex:none;width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--sc)}
+.srow b{display:block}
+.srow span{color:var(--muted)}
+.srow b{color:var(--text)}
+
+/* panel */
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 50px rgba(0,0,0,.15);transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.7,.2,1);z-index:30;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.panel.open{transform:none}
+.ph{padding:26px 26px 20px;color:#fff;position:relative}
+.ph .av{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:20px;background:rgba(255,255,255,.18);margin-bottom:14px}
+.ph h3{margin:0;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.2}
+.ph p{margin:6px 0 0;font-size:15px;opacity:.9}
+.x{position:absolute;z-index:3;top:16px;right:16px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:20px;line-height:1}
+.pb{padding:22px 26px;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.pb h4{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.pb ul{margin:0;padding-left:18px}.pb li{margin:4px 0;font-size:15px;line-height:1.5}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links button{border:1.5px solid var(--line);background:var(--surface2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+.links button:hover{border-color:var(--wire)}
+.scrim{position:fixed;inset:0;background:rgba(5,20,25,.35);opacity:0;pointer-events:none;transition:opacity .3s;z-index:25}
+.scrim.on{opacity:1;pointer-events:auto}
+
+.legend{position:fixed;right:20px;bottom:calc(18px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:5;display:flex;gap:16px;font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 16px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:22px;border-top:2px solid var(--wire)}
+.legend i.d{border-top-style:dashed}
+
+/* mobile */
+@media (max-width:980px){
+  .search{margin-left:0;width:100%}.search input{width:100%}
+  .view3d,.hint3d,.legend{display:none!important}
+  .stage{width:100%;padding:24px 16px 60px;gap:30px}
+  .groups{flex-direction:column;width:100%;gap:24px}
+  .grp{width:100%;gap:22px;padding:18px 14px 20px}
+  .grp .sub{margin-top:-14px}.tagline{margin-top:-18px}.also{margin-top:-6px}
+  .lvl{flex-direction:column;align-items:center;gap:14px;width:100%}
+  .card,.card.ceo,.card.dep{width:100%;max-width:420px}
+  #wires{display:none}
+  .grp .lvl+.lvl{border-left:2px solid var(--wire);padding-left:14px;margin-left:10px;width:calc(100% - 10px);align-items:stretch}
+  .grp .lvl+.lvl .card{max-width:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+@media print{.bar .search,.view3d,.streams,.legend,.hint3d{display:none}body{overflow:visible}.viewport{overflow:visible}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">Uni<b>Link</b><small>Team Structure</small></div>
+  <div class="stats"><span><b>10</b>people</span><span><b>2</b>groups</span><span><b>4</b>workstreams</span></div>
+  <label class="search"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Find a person or role" aria-label="Find a person or role"></label>
+  <div class="seg" role="group" aria-label="View"><button class="view3d" id="bTree" aria-pressed="true">Tree</button><button class="view3d" id="bOrb" aria-pressed="false">Orbit</button><button class="view3d" id="b3d" aria-pressed="false">3D</button></div>
+</header>
+
+<nav class="streams" aria-label="Workstreams">
+  <span class="l">Workstreams</span>
+  <button class="chip" data-s="all" aria-pressed="true">Everyone</button>
+</nav>
+
+<main class="viewport" id="vp">
+  <div class="stage" id="stage">
+    <svg id="wires" class="w" aria-hidden="true"></svg>
+    <div class="lvl z0" id="r0"></div>
+    <div class="lvl z1" id="r1"></div>
+    <div class="groups">
+      <section class="grp biz z4" data-grp="biz" aria-label="Business Operations, Finance and Compliance">
+        <div class="lvl z2" id="b0"></div>
+        <div class="lvl z3" id="b1"></div>
+        <button class="deptbtn" data-dept="biz">See everyone involved <span aria-hidden="true">›</span></button>
+        <h2>Business Operations, Finance and Compliance</h2>
+        <p class="sub">Reports to the Operations and Engineering Manager</p>
+      </section>
+      <section class="grp it z4" data-grp="it" aria-label="IT and Technical Engineering">
+        <div class="lvl z2" id="i0"></div>
+        <div class="lvl z3" id="i1"></div>
+        <div class="lvl z3" id="i2"></div>
+        <button class="deptbtn" data-dept="it">See everyone involved <span aria-hidden="true">›</span></button>
+        <h2>IT and Technical Engineering</h2>
+        <p class="sub">Reports to the Operations and Engineering Manager</p>
+      </section>
+    </div>
+  </div>
+  <div class="orbit" id="orbit" aria-label="Orbit view of the team"><div class="ospin" id="ospin"><svg class="w" id="owires" aria-hidden="true"></svg></div></div>
+  <div class="legend"><span><i></i>Reports to</span><span><b style="color:var(--gold)">●</b> Flow shows direction of reporting</span></div>
+  <div class="hint3d">Drag to turn the chart</div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" aria-live="polite" aria-label="Person details"></aside>
+
+<script>
+(function(){
+const SC={tech:'#2F6FDB',ops:'#1F8A70',fin:'#B9851F',field:'#7A5AF8'};
+const SROLE={
+ tech:{n:'Technical and IT',lead:'cyril',d:'Builds and runs the UniLink app, payment platform and systems.',r:{cyril:'Leads technical direction and system design',marc:'Runs hosting, security, accounts and IT support',oko:'Builds the payment engine and bank connections',wisdom:'Integrates terminals and merchant devices',john:'Oversees delivery, timelines and priorities',justice:'Final approval on technical investment'}},
+ ops:{n:'Operations',lead:'john',d:'Runs day to day delivery, the pilot and how the team works.',r:{john:'Leads operations, timelines and the pilot',celine:'Administration, partners and scheduling',wisdom:'Field operations and on site support',gabriel:'Card production and supplier follow up',justice:'Sets priorities and approves major decisions'}},
+ fin:{n:'Finance and Accounts',lead:'luther',d:'Keeps the books, tracks investor funds and stays compliant.',r:{luther:'Leads bookkeeping and finance reports',celine:'Oversees budgets and investor reporting',venunye:'Regulatory fees, licensing and compliance costs',john:'Approves operational spending',justice:'Final sign off on spending and investment'}},
+ field:{n:'Terminals and Field Deployment',lead:'wisdom',d:'Puts cards and terminals into the hands of merchants and users.',r:{wisdom:'Leads terminal setup and field testing',gabriel:'Cards, chips and testing in the field',john:'Plans and oversees the pilot rollout',justice:'Approves pilot locations and partners'}}
+};
+const GROUPS={
+ biz:{n:'Business Operations, Finance and Compliance',c:'#B9851F',lead:'celine',d:'Partners, investors, administration, finance and regulation.',r:{celine:'Leads the group',venunye:'Licensing, data protection and compliance',luther:'Finance and accounts',john:'Oversees the group as Operations Manager'}},
+ it:{n:'IT and Technical Engineering',c:'#2F6FDB',lead:'cyril',d:'The app, the payment platform, the card and the terminals.',r:{cyril:'Leads the group',marc:'Manages systems and the engineering team',oko:'Payments platform software',gabriel:'Card and chip systems',wisdom:'Terminals and field deployment',john:'Oversees the group as Operations Manager'}}
+};
+const STREAMS={
+  tech:{n:'Technical and IT',m:['oko','marc','cyril','wisdom','john','justice']},
+  ops:{n:'Operations',m:['john','celine','wisdom','gabriel','justice']},
+  fin:{n:'Finance and Accounts',m:['luther','celine','venunye','john','justice']},
+  field:{n:'Terminals and Field Deployment',m:['wisdom','gabriel','john','justice']}
+};
+const P={
+  justice:{n:'Justice Ochulor',t:'CEO and Founder',g:'lead',row:'r0',to:null,badge:'Founder',
+    r:['Sets UniLink’s vision and strategy','Leads investor and partner relationships','Gives final approval on major decisions and spending']},
+  john:{n:'John Essien',t:'Operations and Engineering Manager',g:'lead',row:'r1',to:'justice',badge:'Second in command',
+    r:['Second in command after the CEO','Both group leads report to him','Runs day to day delivery, timelines and the pilot','Oversees engineering and field deployment']},
+  celine:{n:'Celine Naa Aba Palm',t:'Director of Business and Executive Administrator',g:'biz',row:'b0',to:'john',lead:true,badge:'Group lead',
+    r:['Leads the Business Operations, Finance and Compliance group','Manages partners, investors and administration','International business and executive support to the CEO']},
+  venunye:{n:'Venunye Aku Ahodokpo',t:'Compliance and Regulatory Affairs Lead',g:'biz',row:'b1',to:'celine',
+    r:['Bank of Ghana licence application','Data Protection Commission registration','Customer identity checks and anti fraud policies']},
+  luther:{n:'Luther Elia',t:'Finance and Accounts Lead',g:'biz',row:'b1',to:'celine',
+    r:['Bookkeeping and monthly finance reports','Tracks how investor funds are spent','GRA tax and SSNIT filings']},
+  cyril:{n:'Emmanuel Twum Ofori',aka:'Cyril',t:'Co-founder, IT Lead and IT Operations Lead',g:'it',row:'i0',to:'john',lead:true,badge:'Co-founder',
+    r:['Leads the IT and Technical Engineering group','Sets technology direction and system design','Final say on technical decisions']},
+  marc:{n:'Marc Offei',t:'Technical and IT Manager',g:'it',row:'i1',to:'cyril',
+    r:['Runs systems day to day: hosting, security and backups','Team accounts, access to approved drives and devices','App store accounts and IT support for the team']},
+  oko:{n:'Emmanuel Oko',t:'Software Engineer, Payments Platform',g:'it',row:'i2',to:'marc',
+    r:['Payment engine and offline token logic','Connections to banks, mobile money and GhIPSS']},
+  gabriel:{n:'Gabriel Nartey',t:'Card and Chip Systems Engineer',g:'it',row:'i2',to:'marc',
+    r:['Contactless chip and antenna','Card prototypes and testing','Works with the card manufacturer']},
+  wisdom:{n:'Wisdom Kelly Gbloe',t:'Terminals and Field Deployment Engineer',g:'it',row:'i2',to:'marc',
+    r:['POS terminals and merchant device setup','Field testing during the pilot','On site technical support']}
+};
+const COORD=[];
+const COL={lead:'#0D2B33',biz:'#B9851F',it:'#2F6FDB'};
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const ini=n=>n.split(' ').filter(Boolean).map(w=>w[0]).filter((c,i,a)=>i===0||i===a.length-1).join('');
+
+/* build cards */
+let d=0;
+Object.entries(P).forEach(([id,p])=>{
+  const b=document.createElement('button');
+  b.className='card'+(id==='justice'?' ceo':'')+(id==='john'?' dep':'')+(p.lead?' lead':'');
+  b.dataset.id=id;b.style.setProperty('--c',id==='justice'?'#C99A2E':COL[p.g]);b.style.setProperty('--d',(d++*0.07)+'s');
+  b.innerHTML=(p.badge?'<span class="badge">'+p.badge+'</span>':'')+'<span class="av">'+ini(p.n)+'</span><span><span class="nm">'+p.n+(p.aka?' <span style="font-weight:400;color:var(--muted)">('+p.aka+')</span>':'')+'</span><span class="tt" style="display:block">'+p.t+'</span>'+(()=>{const ks=Object.keys(SROLE).filter(k=>SROLE[k].r[id]);return ks.length?'<span class="dots" title="Works in '+ks.length+' workstreams">'+ks.map(k=>'<i style="--sc:'+SC[k]+'"></i>').join('')+'</span>':''})()+'</span>';
+  b.setAttribute('aria-label',p.n+', '+p.t);
+  b.addEventListener('click',()=>open(id));
+  b.addEventListener('mouseenter',()=>chain(id));b.addEventListener('mouseleave',()=>chain(null));
+  b.addEventListener('focus',()=>chain(id));b.addEventListener('blur',()=>chain(null));
+  $('#'+p.row).appendChild(b);
+});
+$$('[data-open]').forEach(x=>x.addEventListener('click',()=>open(x.dataset.open)));
+
+/* wires */
+const stage=$('#stage'),svg=$('#wires');
+function pos(el){let x=0,y=0,e=el;while(e&&e!==stage){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}return{x,y,w:el.offsetWidth,h:el.offsetHeight}}
+let first=true;
+function wires(){
+  svg.setAttribute('width',stage.scrollWidth);svg.setAttribute('height',stage.scrollHeight);
+  let h='';
+  const card=id=>document.querySelector('.card[data-id="'+id+'"]');
+  const path=(a,b,cls)=>{const A=pos(card(a)),B=pos(card(b));const x2=B.x+B.w/2,y2=B.y;let d;
+    if(a==='justice'&&b!=='john'){const left=x2<A.x+A.w/2;const x1=left?A.x:A.x+A.w,y1=A.y+A.h/2,r=18,s=left?-1:1;
+      d='M'+x1+' '+y1+' H'+(x2-s*r)+' Q'+x2+' '+y1+' '+x2+' '+(y1+r)+' V'+y2;}
+    else{const x1=A.x+A.w/2,y1=A.y+A.h,my=y1+(y2-y1)*.5;d='M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2;}
+    return '<path data-a="'+a+'" data-b="'+b+'" class="'+cls+'" d="'+d+'"/>'};
+  Object.entries(P).forEach(([id,p])=>{if(p.to)h+=path(p.to,id,'rep')});
+  COORD.forEach(([a,b])=>h+=path(a,b,'dot'));
+  svg.innerHTML=h;
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)pulses(svg);
+  if(first){svg.querySelectorAll('path').forEach((p,i)=>{const L=Math.ceil(p.getTotalLength());p.style.setProperty('--len',L);p.style.animationDelay=(0.3+i*0.06)+'s';p.classList.add('draw');
+      p.addEventListener('animationend',()=>{p.classList.remove('draw');p.style.strokeDasharray='';},{once:true});});first=false;}
+}
+function pulses(sv){sv.querySelectorAll('path.rep').forEach((p,i)=>{const id='p'+sv.id+i;p.id=id;const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r','4.5');c.setAttribute('class','pulse');c.setAttribute('visibility','hidden');c.dataset.a=p.dataset.a;c.dataset.b=p.dataset.b;
+  const m=document.createElementNS('http://www.w3.org/2000/svg','animateMotion');m.setAttribute('dur','2.6s');m.setAttribute('repeatCount','indefinite');m.setAttribute('begin',(-i*.37)+'s');m.setAttribute('keyPoints','1;0');m.setAttribute('keyTimes','0;1');m.setAttribute('calcMode','linear');
+  const sh=document.createElementNS('http://www.w3.org/2000/svg','set');sh.setAttribute('attributeName','visibility');sh.setAttribute('to','visible');sh.setAttribute('begin',(1.4+i*.23)+'s');c.appendChild(sh);
+  const mp=document.createElementNS('http://www.w3.org/2000/svg','mpath');mp.setAttribute('href','#'+id);m.appendChild(mp);c.appendChild(m);sv.appendChild(c);});}
+/* chain of command highlight */
+function up(id){const s=[];let c=id;while(c){s.push(c);c=P[c].to}return s}
+function chain(id){
+  const paths=document.querySelectorAll('svg.w path, svg.w circle.pulse');
+  if(!id){paths.forEach(p=>p.classList.remove('hot','fade'));return}
+  const line=up(id);
+  paths.forEach(p=>{const on=(p.classList.contains('rep')||p.classList.contains('pulse'))&&line.includes(p.dataset.b)&&line.includes(p.dataset.a);p.classList.toggle('hot',on);p.classList.toggle('fade',!on)});
+}
+
+/* panel */
+const panel=$('#panel'),scrim=$('#scrim');
+function open(id){
+  const p=P[id];
+  const reports=Object.keys(P).filter(k=>P[k].to===id);
+  const streams=Object.entries(STREAMS).filter(([k,s])=>s.m.includes(id));
+  const grp=p.g==='biz'?'Business Operations, Finance and Compliance':p.g==='it'?'IT and Technical Engineering':'Leadership';
+  const btn=k=>'<button data-go="'+k+'">'+P[k].n+'</button>';
+  const col=id==='justice'?'#0D2B33':COL[p.g];
+  panel.innerHTML='<div class="ph" style="background:'+col+'"><button class="x" id="px" aria-label="Close">×</button><div class="av">'+ini(p.n)+'</div><h3>'+p.n+(p.aka?' ('+p.aka+')':'')+'</h3><p>'+p.t+'</p></div>'+
+   '<div class="pb">'+
+   '<div><h4>Group</h4><p style="margin:0;font-size:15px">'+grp+'</p></div>'+
+   '<div><h4>Reports to</h4><div class="links">'+(p.to?btn(p.to):'<span style="font-size:15px">Top of the organisation</span>')+'</div></div>'+
+   (reports.length?'<div><h4>Direct reports ('+reports.length+')</h4><div class="links">'+reports.map(btn).join('')+'</div></div>':'')+
+   '<div><h4>Responsibilities</h4><ul>'+p.r.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>'+
+   '<div><h4>Works across '+streams.length+' workstream'+(streams.length===1?'':'s')+'</h4>'+(streams.length?streams.map(([k,st])=>'<button class="srow" data-st="'+k+'" style="--sc:'+SC[k]+'"><i></i><span><b>'+st.n+'</b>'+SROLE[k].r[id]+'</span></button>').join(''):'<span style="font-size:15px">None listed</span>')+'</div>'+
+   '</div>';
+  panel.classList.add('open');scrim.classList.add('on');
+  $$('[data-id]').forEach(c=>c.classList.toggle('sel',c.dataset.id===id));
+  $('#px').addEventListener('click',close);$('#px').focus();
+  panel.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.go)));
+  panel.querySelectorAll('[data-st]').forEach(b=>b.addEventListener('click',()=>{stream(b.dataset.st);dept('s',b.dataset.st)}));
+  try{history.replaceState(null,'','#'+id)}catch(e){}
+}
+function dept(kind,k){
+  const D=kind==='g'?GROUPS[k]:SROLE[k];const col=kind==='g'?D.c:SC[k];
+  const ids=Object.keys(D.r);const home=id=>kind==='g'?(P[id].g===k):true;
+  const order=[D.lead].concat(ids.filter(i=>i!==D.lead));
+  const row=id=>{const p=P[id];const tag=id===D.lead?'<span class="tg">Lead</span>':(kind==='g'&&!home(id)?'<span class="tg also">Also works here</span>':'');
+    return '<button class="mem" data-go="'+id+'" style="--c:'+(id==='justice'?'#C99A2E':COL[p.g])+'"><span class="av">'+ini(p.n)+'</span><span><span class="nm" style="display:block">'+p.n+'</span><span class="rl">'+D.r[id]+'</span></span>'+tag+'</button>'};
+  panel.innerHTML='<div class="ph" style="background:'+col+'"><button class="x" id="px" aria-label="Close">×</button><p style="margin:0 0 6px;font-size:13px;font-weight:600;opacity:.85">'+(kind==='g'?'Group':'Workstream')+'</p><h3>'+D.n+'</h3><p>'+D.d+'</p></div>'+
+   '<div class="pb"><div><h4>'+ids.length+' people involved, and the role each one plays here</h4><div class="mlist">'+order.map(row).join('')+'</div></div></div>';
+  panel.classList.add('open');scrim.classList.add('on');
+  $$('[data-id]').forEach(c=>{c.classList.toggle('dim',!ids.includes(c.dataset.id));c.classList.toggle('match',ids.includes(c.dataset.id));c.classList.remove('sel')});
+  $('#px').addEventListener('click',close);$('#px').focus();
+  panel.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.go)));
+}
+$$('[data-dept]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();dept('g',b.dataset.dept)}));
+$$('[data-grp]').forEach(g=>g.addEventListener('click',e=>{if(e.target.closest('.card,button'))return;dept('g',g.dataset.grp)}));
+function close(){panel.classList.remove('open');scrim.classList.remove('on');const on=$$('.chip').find(c=>c.getAttribute('aria-pressed')==='true');if(!on||on.dataset.s==='all')$$('[data-id]').forEach(c=>c.classList.remove('dim','match'));$$('[data-id]').forEach(c=>c.classList.remove('sel'));try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+scrim.addEventListener('click',close);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+
+/* workstreams */
+const nav=$('.streams');
+Object.entries(STREAMS).forEach(([k,s])=>{const b=document.createElement('button');b.className='chip';b.dataset.s=k;b.setAttribute('aria-pressed','false');b.innerHTML='<b class="sd" style="--sc:'+SC[k]+'"></b>'+s.n+'<i>'+s.m.length+'</i>';nav.appendChild(b)});
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{stream(c.dataset.s);if(c.dataset.s!=='all')dept('s',c.dataset.s)}));
+function stream(k){
+  $$('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.s===k)));
+  const m=k==='all'?null:STREAMS[k].m;
+  $$('[data-id]').forEach(c=>{c.classList.toggle('dim',!!m&&!m.includes(c.dataset.id));c.classList.toggle('match',!!m&&m.includes(c.dataset.id))});
+  $('#q').value='';
+}
+
+/* search */
+$('#q').addEventListener('input',e=>{
+  const v=e.target.value.trim().toLowerCase();
+  $$('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.s==='all'&&!v)));
+  $$('[data-id]').forEach(c=>{const p=P[c.dataset.id];const hit=!v||(p.n+' '+p.t+' '+(p.aka||'')).toLowerCase().includes(v);c.classList.toggle('dim',!hit);c.classList.toggle('match',!!v&&hit)});
+});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const h=$$('.match[data-id]')[0];if(h)open(h.dataset.id)}});
+
+/* 3D */
+const vp=$('#vp');let rx=28,rz=-8,drag=null;
+function view(v){document.body.classList.toggle('is3d',v==='3d');document.body.classList.toggle('is-orbit',v==='orbit');
+  ['bTree','bOrb','b3d'].forEach((b,i)=>$('#'+b).setAttribute('aria-pressed',String(['tree','orbit','3d'][i]===v)));
+  if(v==='orbit'){buildOrbit();fitOrbit()}else wires();}
+$('#bTree').addEventListener('click',()=>view('tree'));$('#bOrb').addEventListener('click',()=>view('orbit'));$('#b3d').addEventListener('click',()=>view('3d'));
+/* orbit view */
+const ORB={justice:[0,0],john:[1,270],celine:[2,180],cyril:[2,0],venunye:[3,148],luther:[3,212],marc:[3,-30],oko:[4,-60],gabriel:[4,0],wisdom:[4,40]};
+const RAD=[0,190,290,410,525],C=590;let orbitBuilt=false;
+const xy=id=>{const [ring,a]=ORB[id];const r=RAD[ring],t=a*Math.PI/180;return{x:C+r*Math.cos(t),y:C+r*Math.sin(t)}};
+function buildOrbit(){if(orbitBuilt)return;orbitBuilt=true;
+  const sp=$('#ospin'),sv=$('#owires');let h='<g class="spin">';
+  [1,2,3,4].forEach(i=>h+='<circle class="ring" cx="'+C+'" cy="'+C+'" r="'+RAD[i]+'"/>');h+='</g>';
+  const lbl=['','Second in command','Group leads','Managers and leads','Engineers'];
+  [1,2,3,4].forEach(i=>h+='<text class="ringlbl" x="'+(C+8)+'" y="'+(C+RAD[i]-8)+'">'+lbl[i]+'</text>');
+  Object.entries(P).forEach(([id,p])=>{if(!p.to)return;const a=xy(p.to),b=xy(id);const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;const dx=mx-C,dy=my-C,k=.12;
+    h+='<path class="rep" data-a="'+p.to+'" data-b="'+id+'" d="M'+a.x+' '+a.y+' Q'+(mx+dx*k)+' '+(my+dy*k)+' '+b.x+' '+b.y+'"/>'});
+  sv.innerHTML=h;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)pulses(sv);
+  let d=0;Object.entries(P).forEach(([id,p])=>{const {x,y}=xy(id);const b=document.createElement('button');b.className='onode';b.dataset.id=id;
+    const size=id==='justice'?110:id==='john'?88:(p.lead?76:62);
+    b.style.cssText='left:'+x+'px;top:'+(y-size/2)+'px;--s:'+size+'px;--c:'+(id==='justice'?'#C99A2E':COL[p.g])+';--d:'+(d++*.08)+'s';
+    b.innerHTML='<span class="ob">'+ini(p.n)+'</span><span class="on">'+p.n+'</span><span class="ot">'+p.t+'</span>';
+    b.setAttribute('aria-label',p.n+', '+p.t);b.addEventListener('click',()=>open(id));
+    b.addEventListener('mouseenter',()=>chain(id));b.addEventListener('mouseleave',()=>chain(null));sp.appendChild(b)});
+  const q=$('#q').value;if(q)$('#q').dispatchEvent(new Event('input'));
+  const on=$$('.chip').find(c=>c.getAttribute('aria-pressed')==='true');if(on&&on.dataset.s!=='all')stream(on.dataset.s);}
+function fitOrbit(){const r=vp.getBoundingClientRect();const k=Math.min(1,Math.min(r.width,r.height)/1230);$('#ospin').style.transform='scale('+k+') translate(-590px,-590px)'}
+window.addEventListener('resize',()=>{if(document.body.classList.contains('is-orbit'))fitOrbit()});
+vp.addEventListener('pointerdown',e=>{if(!document.body.classList.contains('is3d')||e.target.closest('.card,button'))return;drag={x:e.clientX,y:e.clientY,rx,rz};vp.setPointerCapture(e.pointerId);stage.style.transition='none'});
+vp.addEventListener('pointermove',e=>{if(!drag)return;rz=drag.rz+(e.clientX-drag.x)*.15;rx=Math.max(0,Math.min(60,drag.rx-(e.clientY-drag.y)*.15));stage.style.setProperty('--rx',rx+'deg');stage.style.setProperty('--rz',rz+'deg')});
+vp.addEventListener('pointerup',()=>{drag=null;stage.style.transition=''});
+
+/* init */
+const ro=new ResizeObserver(()=>wires());ro.observe(stage);
+window.addEventListener('load',wires);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(wires);
+const h=(location.hash||'').slice(1);if(P[h])setTimeout(()=>open(h),600);
+})();
+</script>
+</body>
+</html>
