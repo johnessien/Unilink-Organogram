@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UniLink Organisational Structure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F1;--surface:#FFFFFF;--surface2:#F6F9F8;--line:#D3DEDB;--text:#10262C;--muted:#56696E;
+  --ink:#0D2B33;--gold:#E8C76A;--wire:#9FB3B0;
+  --biz:#B9851F;--biz-soft:#FBF1DC;--pmo:#1F8A70;--pmo-soft:#E0F2EC;--it:#2F6FDB;--it-soft:#E3ECFC;--adv:#7A5AF8;--adv-soft:#EEE9FE;
+  --display:'Unbounded','Arial Black',system-ui,sans-serif;--body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C2026;--surface:#14313A;--surface2:#183942;--line:#2A4C55;--text:#E6EFEC;--muted:#A3B8B9;--wire:#4C6B72;
+  --biz:#E8B94F;--biz-soft:#2E2A1C;--pmo:#4CC59E;--pmo-soft:#16352E;--it:#7FAEFF;--it-soft:#1B2E4D;--adv:#A993FF;--adv-soft:#2A2547;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C2026;--surface:#14313A;--surface2:#183942;--line:#2A4C55;--text:#E6EFEC;--muted:#A3B8B9;--wire:#4C6B72;
+  --biz:#E8B94F;--biz-soft:#2E2A1C;--pmo:#4CC59E;--pmo-soft:#16352E;--it:#7FAEFF;--it-soft:#1B2E4D;--adv:#A993FF;--adv-soft:#2A2547;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:10px}
+
+.bar{flex:none;background:#0D2B33;color:#E9F0EE;padding:16px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:600;font-size:18px;white-space:nowrap}
+.brand b{color:var(--gold);font-weight:600}
+.brand small{font-family:var(--body);font-weight:500;font-size:14px;opacity:.75;margin-left:8px}
+.stats{display:flex;gap:18px;font-size:14px;color:#B9CDCE;flex-wrap:wrap}
+.stats b{color:#fff;font-family:var(--display);font-weight:600;margin-right:4px}
+.search{margin-left:auto;position:relative}
+.search input{width:240px;border:0;border-radius:999px;padding:10px 16px 10px 38px;font:inherit;font-size:15px;background:#14404A;color:#fff}
+.search input::placeholder{color:#9DB6B8}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.7}
+.seg{display:flex;gap:6px}
+.vbtn{border:2px solid #3E6B75;background:transparent;color:#E9F0EE;border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px}
+.vbtn[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#1B1606}
+
+.chips{flex:none;display:flex;gap:10px;align-items:center;padding:12px 24px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.chips .l{font-size:14px;font-weight:600;color:var(--muted);margin-right:4px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.legend{margin-left:auto;display:flex;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:flex;gap:6px;align-items:center}
+.legend em{display:inline-block;width:22px;border-top:2.5px solid var(--wire)}
+.legend em.d{border-top-style:dashed;border-color:var(--adv)}
+
+.viewport{flex:1;overflow:auto;position:relative}
+.stage{position:relative;margin:0 auto;padding:34px 28px 70px;width:max-content;min-width:100%;display:flex;flex-direction:column;align-items:center;gap:44px}
+svg.w{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:1}
+svg.w path{fill:none;stroke:var(--wire);stroke-width:2.6;transition:stroke .3s,opacity .3s,stroke-width .3s}
+svg.w path.adv{stroke:var(--adv);stroke-dasharray:6 7;stroke-width:2.2}
+svg.w path.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1s ease forwards}
+svg.w path.adv.draw{stroke-dasharray:6 7;stroke-dashoffset:0;animation:fadein 1s ease forwards;opacity:0}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes fadein{to{opacity:1}}
+svg.w path.hot{stroke:var(--gold);stroke-width:3.6}
+svg.w path.fade{opacity:.16}
+svg.w circle.pulse{fill:var(--gold)}svg.w circle.pulse.fade{opacity:.1}
+
+.top{display:flex;align-items:center;gap:90px;position:relative}
+.card{position:relative;z-index:2;width:262px;border:1.5px solid var(--line);background:var(--surface);border-radius:18px;padding:16px;text-align:left;display:flex;gap:12px;align-items:center;transition:box-shadow .3s,opacity .35s,border-color .3s;opacity:0;animation:pop .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card:hover{box-shadow:0 14px 30px rgba(13,43,51,.14)}
+.av{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:14px;color:#fff;background:var(--c)}
+.nm{font-weight:600;font-size:15.5px;line-height:1.25;display:block}
+.tt{font-size:13px;color:var(--muted);line-height:1.35;margin-top:3px;display:block}
+.badge{position:absolute;top:-11px;right:14px;font-size:11px;font-weight:700;background:var(--gold);color:#1B1606;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.card.ceo{background:#0D2B33;color:#E9F0EE;border-color:transparent;width:290px}
+.card.ceo .tt{color:#B9CDCE}
+.card.coo{border:2px solid var(--gold);width:300px}
+.card.adv{border:2px dashed var(--adv);background:var(--adv-soft);width:230px}
+.card.adv .badge{background:var(--adv);color:#fff}
+
+.card.board .av{background:var(--adv)}
+
+.depts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start;position:relative;width:1380px}
+.dept{position:relative;border-radius:24px;padding:22px 18px 18px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:16px;cursor:pointer}
+.dept.biz{background:var(--biz-soft);border-color:color-mix(in srgb,var(--biz) 35%,transparent)}
+.dept.pmo{background:var(--pmo-soft);border-color:color-mix(in srgb,var(--pmo) 35%,transparent)}
+.dept.it{background:var(--it-soft);border-color:color-mix(in srgb,var(--it) 35%,transparent)}
+.dept:hover{box-shadow:0 0 0 3px color-mix(in srgb,var(--wire) 45%,transparent)}
+.dhead{display:flex;justify-content:center}
+.dept h2{margin:0;font-family:var(--display);font-weight:600;font-size:15.5px;text-align:center}
+.biz h2{color:var(--biz)}.pmo h2{color:var(--pmo)}.it h2{color:var(--it)}
+.dept .sub{margin:-10px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.office{position:relative;z-index:2;border:2px solid var(--pmo);background:var(--surface);border-radius:999px;padding:10px 18px;font-weight:600;font-size:14px;display:flex;gap:10px;align-items:center}
+.office .av{width:32px;height:32px;font-size:12px}
+.units{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pmo .units{grid-template-columns:1fr}
+.unit{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:8px;cursor:default}
+.unit h3{margin:0;font-size:14px;font-weight:600;line-height:1.3}
+.unit ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--muted);line-height:1.45}
+.ppl{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.pc{display:flex;gap:9px;align-items:center;border:1.5px solid var(--line);background:var(--surface2);border-radius:12px;padding:6px 9px;text-align:left;width:100%;transition:border-color .2s,opacity .35s,box-shadow .3s}
+.pc:hover{border-color:var(--wire)}
+.pc .av{width:32px;height:32px;font-size:11.5px}
+.pc .nm{font-size:13.5px}.pc .tt{font-size:11.5px;margin-top:1px}
+.pc.open{border-style:dashed;background:transparent}
+.pc.open .av{background:transparent;border:2px dashed var(--muted);color:var(--muted)}
+.pc.also{opacity:.9}
+.pc.also .tag{font-size:10.5px;font-weight:700;color:var(--adv);margin-left:auto;white-space:nowrap}
+.deptbtn{align-self:center;border:1.5px solid currentColor;background:var(--surface);border-radius:999px;padding:7px 15px;font-size:13.5px;font-weight:600}
+.biz .deptbtn{color:var(--biz)}.pmo .deptbtn{color:var(--pmo)}.it .deptbtn{color:var(--it)}
+
+.dim{opacity:.2!important}
+.match{box-shadow:0 0 0 3px var(--gold)!important}
+.sel{box-shadow:0 0 0 4px var(--gold)!important}
+.advhi{box-shadow:0 0 0 4px var(--adv)!important}
+
+/* orbit */
+.orbit{display:none;position:absolute;inset:0;overflow:hidden}
+.is-orbit .orbit{display:block}.is-orbit .stage{display:none}
+.ospin{position:absolute;left:50%;top:50%;width:1180px;height:1180px;transform-origin:0 0}
+#owires{width:1180px;height:1180px}
+.ring{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 9}
+.ringlbl{font-size:17px;fill:var(--muted);font-weight:600}
+.spin{transform-origin:590px 590px;animation:spin 160s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.onode{position:absolute;width:190px;margin-left:-95px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;z-index:2;opacity:0;animation:pop .6s forwards;animation-delay:var(--d,0s);transition:opacity .35s}
+.onode .ob{width:var(--s);height:var(--s);border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:600;font-size:calc(var(--s)*.28);background:var(--c);box-shadow:0 0 0 6px var(--bg),0 0 0 8px color-mix(in srgb,var(--c) 45%,transparent),0 12px 26px rgba(13,43,51,.22)}
+.onode.open .ob{background:transparent;border:2.5px dashed var(--muted);color:var(--muted)}
+.onode .on{font-weight:600;font-size:18px;line-height:1.25;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 9px}
+.onode .ot{font-size:14.5px;color:var(--muted);line-height:1.3;margin-top:-3px}
+.onode.match,.onode.sel,.onode.advhi{box-shadow:none!important}
+.onode.match .ob,.onode.sel .ob{box-shadow:0 0 0 6px var(--bg),0 0 0 10px var(--gold)}
+.onode.advhi .ob{box-shadow:0 0 0 6px var(--bg),0 0 0 10px var(--adv)}
+
+/* panel */
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(410px,92vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 50px rgba(0,0,0,.15);transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.7,.2,1);z-index:30;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.panel.open{transform:none}
+.ph{padding:26px 26px 20px;color:#fff;position:relative}
+.ph .pav{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:20px;background:rgba(255,255,255,.2);margin-bottom:12px}
+.ph h3{margin:0;font-family:var(--display);font-weight:600;font-size:21px;line-height:1.2}
+.ph p{margin:6px 0 0;font-size:15px;opacity:.92}
+.ph .k{margin:0 0 6px;font-size:13px;font-weight:600;opacity:.85}
+.x{position:absolute;z-index:3;top:16px;right:16px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:20px;line-height:1}
+.pb{padding:22px 26px;overflow:auto;display:flex;flex-direction:column;gap:20px}
+.pb h4{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--muted)}
+.pb ul{margin:0;padding-left:18px}.pb li{margin:4px 0;font-size:15px;line-height:1.5}
+.pb p{margin:0;font-size:15px;line-height:1.55}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links button{border:1.5px solid var(--line);background:var(--surface2);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+.mem{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface2);border-radius:14px;padding:10px 12px}
+.mem .av{width:38px;height:38px;font-size:12.5px}
+.mem .rl{font-size:13.5px;color:var(--muted);line-height:1.35;display:block}
+.mem .tg{margin-left:auto;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;background:var(--gold);color:#1B1606;white-space:nowrap}
+.mem .tg.o{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+.mlist{display:flex;flex-direction:column;gap:8px}
+.ulab{font-size:12.5px;font-weight:700;color:var(--muted);margin:10px 0 2px}
+.scrim{position:fixed;inset:0;background:rgba(5,20,25,.35);opacity:0;pointer-events:none;transition:opacity .3s;z-index:25}
+.scrim.on{opacity:1;pointer-events:auto}
+
+@media (max-width:980px){
+  .search{margin-left:0;width:100%}.search input{width:100%}.seg,.legend{display:none}
+  .stage{width:100%;padding:22px 14px 60px;gap:26px}
+  .top{flex-direction:column;gap:12px;width:100%}
+  .card,.card.ceo,.card.coo,.card.adv{width:100%;max-width:440px}
+  .depts{grid-template-columns:1fr;width:100%}
+  .units{grid-template-columns:1fr}
+  svg.w{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+@media print{.search,.seg,.chips{display:none}body{overflow:visible}.viewport{overflow:visible}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">Uni<b>Link</b><small>Organisational Structure</small></div>
+  <div class="stats" id="stats"></div>
+  <label class="search"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Find a person or role" aria-label="Find a person or role"></label>
+  <div class="seg" role="group" aria-label="View"><button class="vbtn" id="bTree" aria-pressed="true">Chart</button><button class="vbtn" id="bOrb" aria-pressed="false">Orbit</button></div>
+</header>
+<nav class="chips" id="chips" aria-label="Departments">
+  <span class="l">Show</span>
+  <div class="legend"><span><em></em>Reports to</span><span><em class="d"></em>Advises</span></div>
+</nav>
+
+<main class="viewport" id="vp">
+  <div class="stage" id="stage">
+    <svg class="w" id="wires" aria-hidden="true"></svg>
+    <div class="top" id="rowTop"></div>
+    <div class="top" id="rowCoo"></div>
+    <div class="depts" id="depts"></div>
+  </div>
+  <div class="orbit" id="orbit"><div class="ospin" id="ospin"><svg class="w" id="owires" aria-hidden="true"></svg></div></div>
+</main>
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" aria-live="polite" aria-label="Details"></aside>
+
+<script>
+(function(){
+const COL={lead:'#0D2B33',biz:'#B9851F',pmo:'#1F8A70',it:'#2F6FDB',adv:'#7A5AF8',open:'#8A9A9D'};
+/* ---------- people ---------- */
+const P={
+ justice:{n:'Justice Ochulor',t:'Chief Executive Officer and Founder',d:'lead',to:null,badge:'Founder',
+   r:['Sets UniLink’s vision, strategy and governance','Leads investors, the board and key partners','Gives final approval on major decisions and spending']},
+ board:{n:'Board of Directors',t:'Advisory. To be formed',d:'adv',adv:['justice'],open:true,badge:'Advisory',
+   r:['Oversight and governance of the company','Advises the CEO on strategy, risk and fundraising','Seats to be filled by founders and investors']},
+ david:{n:'David Said Alhassan',t:'Finance Advisor to the Executives',d:'biz',to:'celine',adv:['justice','john','cyril'],badge:'Executive advisor',
+   r:['Personal finance advisor to the CEO, COO and CTO','Budgets, product costing and cost control for the card and app','Business administration and financial operations','Financial reporting, reconciliations and payroll processes','Supports data analytics and decision making'],
+   bio:'Accounting and finance professional with experience in financial reporting, payroll, inventory accounting, reconciliations, product costing, financial analysis and statutory reporting, including Free Zones reporting. Holds a Bachelor of Business Administration in Business Analytics from Nexford University, with a strong interest in where finance meets technology, data analytics and automation.',
+   out:'Tennis, football, computer games, entrepreneurship and new technology.'},
+ john:{n:'John Essien',t:'Chief Operating Officer and Head of Programme Management',d:'pmo',to:'justice',badge:'Second in command',
+   r:['Second in command after the CEO','The Chief Business Officer and Chief Technology Officer report to him','Leads the Programme Management Office: portfolio, delivery and release','Runs day to day operations, timelines and the pilot']},
+ celine:{n:'Celine Naa Aba Palm',t:'Chief Business Officer',d:'biz',to:'john',badge:'Head of Business',
+   r:['Leads the Business Department','Partnerships, enterprise sales and investor relations','Oversees finance, compliance and marketing','Executive administration for the leadership team']},
+ cyril:{n:'Emmanuel Twum Ofori',aka:'Cyril',t:'Co-founder and Chief Technology Officer',d:'it',to:'john',badge:'Co-founder',
+   r:['Leads the IT and Engineering Department','Sets technology direction and system design','Final say on technical decisions and security']},
+ luther:{n:'Luther Elia',t:'Finance and Accounts Lead',d:'biz',to:'celine',r:['Bookkeeping and monthly finance reports','Tracks how investor funds are spent','GRA tax and SSNIT filings']},
+ venunye:{n:'Venunye Aku Ahodokpo',t:'Compliance and Regulatory Affairs Lead',d:'biz',to:'celine',r:['Bank of Ghana licence application','Data Protection Commission registration','Customer identity checks and anti fraud policies']},
+ mkt:{n:'Marketing and Acquisition Lead',t:'Open role. To be hired',d:'biz',to:'celine',open:true,r:['Brand, social media and digital marketing','Merchant and customer acquisition','Keeps the cost of winning each customer low']},
+ marc:{n:'Marc Offei',t:'Technical and IT Manager',d:'it',to:'cyril',r:['Cloud hosting, DevOps and reliability','Security, backups and access control','Team accounts, devices and IT support']},
+ oko:{n:'Emmanuel Oko',t:'Software Engineer, Payments Platform',d:'it',to:'cyril',r:['Payment engine and offline token logic','Mobile app and connections to banks, mobile money and GhIPSS']},
+ gabriel:{n:'Gabriel Nartey',t:'Card and Chip Systems Engineer',d:'it',to:'cyril',r:['Contactless chip and antenna','Card prototypes and testing','Works with the card manufacturer']},
+ wisdom:{n:'Wisdom Kelly Gbloe',t:'Terminals and Field Deployment Engineer',d:'it',to:'cyril',r:['POS terminals and merchant device setup','Field rollout of cards and terminals with the PMO','On site technical support during the pilot']},
+ data:{n:'Data and Analytics Lead',t:'Open role. To be hired',d:'it',to:'cyril',open:true,r:['Transaction data, reporting and dashboards','Fraud patterns and risk analytics','Insight for product and business decisions']}
+};
+/* ---------- departments ---------- */
+const D={
+ biz:{n:'Business Department',head:'celine',k:'Chief Business Officer',d:'Partnerships, finance, compliance and growth.',units:[
+   {n:'Partnerships and Enterprise Sales',f:['Bank and partner relationships','Enterprise and merchant sales','Investor relations'],p:['celine']},
+   {n:'Finance and Accounts',f:['Bookkeeping and reporting','Budgets and investor funds','Tax and statutory filings'],p:['luther','david']},
+   {n:'Regulatory Compliance',f:['Bank of Ghana licensing','Data protection','Identity checks and anti fraud'],p:['venunye']},
+   {n:'Marketing and Acquisition',f:['Digital and social marketing','Customer and merchant growth'],p:['mkt']}]},
+ pmo:{n:'Programme Management Office',head:'john',k:'Chief Operating Officer',d:'The bridge between Business and Technology. Turns plans into delivered work.',units:[
+   {n:'Portfolio and Programme Management',f:['Priorities and resource allocation','Strategic alignment','Reporting and progress metrics'],p:['john']},
+   {n:'Agile Delivery',f:['Sprint planning and stand ups','Timelines across both departments','Risk and issue tracking'],p:['john']},
+   {n:'Release and Field Deployment',f:['App release cycle','Card and terminal rollout','Pilot coordination'],p:['wisdom','gabriel']}]},
+ it:{n:'IT and Engineering Department',head:'cyril',k:'Chief Technology Officer',d:'The app, the payment platform, the card and the terminals.',units:[
+   {n:'Infrastructure, DevOps and Security',f:['Cloud and reliability','Security and access','IT support'],p:['marc']},
+   {n:'Software Engineering',f:['Mobile app','Payment platform','Bank and wallet connections'],p:['oko']},
+   {n:'Card and Terminal Hardware',f:['Chip and antenna','Card prototypes','POS terminals'],p:['gabriel','wisdom']},
+   {n:'Data and Analytics',f:['Reporting and dashboards','Fraud and risk analytics'],p:['data','david']}]}
+};
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const ini=n=>n.split(' ').filter(Boolean).map(w=>w[0]).filter((c,i,a)=>i===0||i===a.length-1).join('');
+const col=id=>id==='justice'?'#C99A2E':(P[id].open&&id!=='board'?COL.open:COL[P[id].d]);
+const people=Object.keys(P).filter(k=>!P[k].open);
+$('#stats').innerHTML='<span><b>'+people.length+'</b>people</span><span><b>3</b>departments</span><span><b>'+Object.keys(P).filter(k=>P[k].open&&k!=='board').length+'</b>open roles</span>';
+
+/* ---------- build chart ---------- */
+let dl=0;
+function card(id,cls){const p=P[id];const b=document.createElement('button');b.className='card '+cls;b.dataset.id=id;b.style.setProperty('--c',col(id));b.style.setProperty('--d',(dl++*.07)+'s');
+  b.innerHTML=(p.badge?'<span class="badge">'+p.badge+'</span>':'')+'<span class="av">'+(id==='board'?'BD':ini(p.n))+'</span><span><span class="nm">'+p.n+(p.aka?' <span style="font-weight:400;color:var(--muted)">('+p.aka+')</span>':'')+'</span><span class="tt">'+p.t+'</span></span>';
+  bind(b,id);return b}
+function chip(id,dept){const p=P[id];const b=document.createElement('button');const also=P[id].d!==dept&&!p.open||(id==='david'&&dept==='it')||(id==='gabriel'&&dept==='pmo')||(id==='wisdom'&&dept==='pmo');
+  b.className='pc'+(p.open?' open':'')+(also?' also':'');b.dataset.id=id;b.style.setProperty('--c',col(id));
+  b.innerHTML='<span class="av">'+(p.open?'+':ini(p.n))+'</span><span><span class="nm">'+p.n+'</span><span class="tt">'+(p.open?'To be hired':p.t)+'</span></span>'+(also?'<span class="tag">Also here</span>':'');
+  bind(b,id);return b}
+function bind(b,id){b.setAttribute('aria-label',P[id].n+', '+P[id].t);b.addEventListener('click',e=>{e.stopPropagation();open(id)});
+  b.addEventListener('mouseenter',()=>chain(id));b.addEventListener('mouseleave',()=>chain(null));b.addEventListener('focus',()=>chain(id));b.addEventListener('blur',()=>chain(null))}
+$('#rowTop').append(card('board','adv board'),card('justice','ceo'),card('david','adv'));
+$('#rowCoo').append(card('john','coo'));
+Object.entries(D).forEach(([k,d])=>{
+  const s=document.createElement('section');s.className='dept '+k;s.dataset.dept=k;s.setAttribute('aria-label',d.n);
+  const head=document.createElement('div');head.className='dhead';
+  if(k==='pmo'){const o=document.createElement('button');o.className='office';o.dataset.id='john';o.id='pmoHead';o.innerHTML='<span class="av" style="--c:'+COL.pmo+'">JE</span>Led by John Essien, COO';bind(o,'john');head.append(o)}
+  else head.append(card(d.head,'dh'));
+  s.append(head);
+  s.insertAdjacentHTML('beforeend','<h2>'+d.n+'</h2><p class="sub">'+d.d+'</p>');
+  const u=document.createElement('div');u.className='units';
+  d.units.forEach(un=>{const box=document.createElement('div');box.className='unit';box.innerHTML='<h3>'+un.n+'</h3><ul>'+un.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+    const pl=document.createElement('div');pl.className='ppl';un.p.forEach(id=>{if(k!=='pmo'&&id===d.head)return;if(k==='pmo'&&id==='john')return;pl.append(chip(id,k))});
+    if(pl.children.length)box.append(pl);else box.insertAdjacentHTML('beforeend','<p style="margin:0;font-size:12.5px;color:var(--muted)">Led directly by '+P[d.head].n.split(' ')[0]+'</p>');
+    u.append(box)});
+  s.append(u);
+  const btn=document.createElement('button');btn.className='deptbtn';btn.textContent='See everyone involved ›';btn.addEventListener('click',e=>{e.stopPropagation();dept(k)});s.append(btn);
+  s.addEventListener('click',e=>{if(e.target.closest('button'))return;dept(k)});
+  $('#depts').append(s)});
+
+/* ---------- wires ---------- */
+const stage=$('#stage'),svg=$('#wires');
+function pos(el){let x=0,y=0,e=el;while(e&&e!==stage){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}return{x,y,w:el.offsetWidth,h:el.offsetHeight}}
+const el=id=>id==='pmo'?$('#pmoHead'):$('.card[data-id="'+id+'"]');
+let first=true;
+function wires(){
+  if(window.innerWidth<=980)return;
+  svg.setAttribute('width',stage.scrollWidth);svg.setAttribute('height',stage.scrollHeight);
+  const down=(a,b,cls,da,db)=>{const A=pos(el(a)),B=pos(el(b));const x1=A.x+A.w/2,y1=A.y+A.h,x2=B.x+B.w/2,y2=B.y,my=y1+(y2-y1)*.5;
+    return '<path class="'+cls+'" data-a="'+da+'" data-b="'+db+'" d="M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2+'"/>'};
+  const side=(a,b,da,db)=>{const A=pos(el(a)),B=pos(el(b));const left=B.x<A.x;const x1=left?A.x:A.x+A.w,x2=left?B.x+B.w:B.x,y=A.y+A.h/2;
+    return '<path class="adv" data-a="'+da+'" data-b="'+db+'" d="M'+x1+' '+y+' L'+x2+' '+(B.y+B.h/2)+'"/>'};
+  let h='';
+  h+=down('justice','john','rep','justice','john');
+  h+=down('john','celine','rep','john','celine');
+  h+=down('john','pmo','rep','john','pmo');
+  h+=down('john','cyril','rep','john','cyril');
+  h+=side('justice','board','justice','board');
+  h+=side('justice','david','justice','david');
+  svg.innerHTML=h;
+  if(first){svg.querySelectorAll('path').forEach((p,i)=>{const L=Math.ceil(p.getTotalLength());p.style.setProperty('--len',L);p.style.animationDelay=(.3+i*.08)+'s';p.classList.add('draw');p.addEventListener('animationend',()=>{p.classList.remove('draw');p.style.strokeDasharray='';p.style.opacity=''},{once:true})});first=false}
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)pulses(svg);
+}
+function pulses(sv){sv.querySelectorAll('path.rep').forEach((p,i)=>{const id=sv.id+'p'+i;p.id=id;const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r','4.5');c.setAttribute('class','pulse');c.setAttribute('visibility','hidden');c.dataset.a=p.dataset.a;c.dataset.b=p.dataset.b;
+  const st=document.createElementNS('http://www.w3.org/2000/svg','set');st.setAttribute('attributeName','visibility');st.setAttribute('to','visible');st.setAttribute('begin',(1.4+i*.25)+'s');c.appendChild(st);
+  const m=document.createElementNS('http://www.w3.org/2000/svg','animateMotion');m.setAttribute('dur','2.6s');m.setAttribute('repeatCount','indefinite');m.setAttribute('begin',(1.4+i*.25)+'s');m.setAttribute('keyPoints','1;0');m.setAttribute('keyTimes','0;1');m.setAttribute('calcMode','linear');
+  const mp=document.createElementNS('http://www.w3.org/2000/svg','mpath');mp.setAttribute('href','#'+id);m.appendChild(mp);c.appendChild(m);sv.appendChild(c)})}
+/* chain highlight */
+function up(id){const s=[];let c=id;while(c){s.push(c);c=P[c].to}if(['john'].includes(id))s.push('pmo');return s}
+function chain(id){
+  $$('.advhi').forEach(c=>c.classList.remove('advhi'));
+  const items=$$('svg.w path, svg.w circle.pulse');
+  if(!id){items.forEach(p=>p.classList.remove('hot','fade'));return}
+  const line=up(id);
+  items.forEach(p=>{const on=!p.classList.contains('adv')&&line.includes(p.dataset.a)&&line.includes(p.dataset.b)||(p.classList.contains('adv')&&(p.dataset.b===id));p.classList.toggle('hot',on);p.classList.toggle('fade',!on)});
+  (P[id].adv||[]).forEach(a=>$$('[data-id="'+a+'"]').forEach(c=>c.classList.add('advhi')));
+}
+
+/* ---------- panels ---------- */
+const panel=$('#panel'),scrim=$('#scrim');
+function homeDept(id){return id==='justice'?'Executive leadership':id==='board'?'Advisory':D[P[id].d]?D[P[id].d].n:'Executive leadership'}
+function units(id){const out=[];Object.entries(D).forEach(([k,d])=>d.units.forEach(u=>{if(u.p.includes(id))out.push(d.n+': '+u.n)}));return out}
+function open(id){
+  const p=P[id];const btn=k=>'<button data-go="'+k+'">'+P[k].n+'</button>';
+  const reports=Object.keys(P).filter(k=>P[k].to===id);
+  const advisors=Object.keys(P).filter(k=>(P[k].adv||[]).includes(id));
+  const us=units(id);
+  panel.innerHTML='<div class="ph" style="background:'+(id==='justice'?'#0D2B33':col(id))+'"><button class="x" id="px" aria-label="Close">×</button><div class="pav">'+(p.open?'+':ini(p.n))+'</div><h3>'+p.n+(p.aka?' ('+p.aka+')':'')+'</h3><p>'+p.t+'</p></div>'+
+   '<div class="pb">'+
+   '<div><h4>Department</h4><p>'+homeDept(id)+'</p></div>'+
+   (us.length?'<div><h4>Works in</h4><ul>'+us.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':'')+
+   (p.to?'<div><h4>Reports to</h4><div class="links">'+btn(p.to)+'</div></div>':(p.adv?'':'<div><h4>Reports to</h4><p>Top of the organisation</p></div>'))+
+   (p.adv?'<div><h4>Advises</h4><div class="links">'+p.adv.map(btn).join('')+'</div></div>':'')+
+   (advisors.length?'<div><h4>Advised by</h4><div class="links">'+advisors.map(btn).join('')+'</div></div>':'')+
+   (reports.length?'<div><h4>Direct reports ('+reports.length+')</h4><div class="links">'+reports.map(btn).join('')+'</div></div>':'')+
+   '<div><h4>'+(p.open?'What this role will do':'Responsibilities')+'</h4><ul>'+p.r.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>'+
+   (p.bio?'<div><h4>Background</h4><p>'+p.bio+'</p></div>':'')+(p.out?'<div><h4>Outside work</h4><p>'+p.out+'</p></div>':'')+
+   '</div>';
+  show();$$('[data-id]').forEach(c=>c.classList.toggle('sel',c.dataset.id===id));
+}
+function dept(k){
+  const d=D[k];const ids=[];d.units.forEach(u=>u.p.forEach(i=>{if(!ids.includes(i))ids.push(i)}));if(!ids.includes(d.head))ids.unshift(d.head);
+  const mem=(id,role)=>{const p=P[id];return '<button class="mem" data-go="'+id+'" style="--c:'+col(id)+'"><span class="av">'+(p.open?'+':ini(p.n))+'</span><span><span class="nm">'+p.n+'</span><span class="rl">'+role+'</span></span>'+(id===d.head?'<span class="tg">Head</span>':p.open?'<span class="tg o">Open role</span>':'')+'</button>'};
+  let h='<div class="mlist">'+mem(d.head,d.k);
+  d.units.forEach(u=>{const ps=u.p.filter(i=>i!==d.head);h+='<p class="ulab">'+u.n+'</p>'+(ps.length?ps.map(i=>mem(i,P[i].open?'To be hired':P[i].t)).join(''):'<p style="margin:0;font-size:14px;color:var(--muted)">Led directly by the head of department</p>')});
+  h+='</div>';
+  panel.innerHTML='<div class="ph" style="background:'+COL[k]+'"><button class="x" id="px" aria-label="Close">×</button><p class="k">Department</p><h3>'+d.n+'</h3><p>'+d.d+'</p></div><div class="pb"><div><h4>'+ids.filter(i=>!P[i].open).length+' people'+(ids.some(i=>P[i].open)?' and '+ids.filter(i=>P[i].open).length+' open role':'')+'</h4>'+h+'</div></div>';
+  show();$$('[data-id]').forEach(c=>{c.classList.toggle('dim',!ids.includes(c.dataset.id));c.classList.remove('sel')});
+}
+function show(){panel.classList.add('open');scrim.classList.add('on');$('#px').addEventListener('click',close);$('#px').focus();
+  panel.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.go)))}
+function close(){panel.classList.remove('open');scrim.classList.remove('on');$$('[data-id]').forEach(c=>c.classList.remove('sel'));
+  const on=$$('.chip').find(c=>c.getAttribute('aria-pressed')==='true');if(!on||on.dataset.f==='all')$$('[data-id]').forEach(c=>c.classList.remove('dim','match'))}
+scrim.addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+
+/* ---------- filters ---------- */
+const F={all:['Everyone','#0D2B33'],biz:['Business','#B9851F'],pmo:['Programme Management','#1F8A70'],it:['IT and Engineering','#2F6FDB'],adv:['Advisory','#7A5AF8'],open:['Open roles','#8A9A9D']};
+Object.entries(F).forEach(([k,[n,c]])=>{const b=document.createElement('button');b.className='chip';b.dataset.f=k;b.setAttribute('aria-pressed',String(k==='all'));b.style.setProperty('--c',c);b.innerHTML=(k==='all'?'':'<i></i>')+n;
+  b.addEventListener('click',()=>filter(k));$('#chips').insertBefore(b,$('.legend'))});
+function filter(k){$$('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.f===k)));$('#q').value='';
+  if(k==='all'){$$('[data-id]').forEach(c=>c.classList.remove('dim','match'));return}
+  if(D[k]){dept(k);return}
+  const ids=k==='adv'?['board','david','justice']:Object.keys(P).filter(i=>P[i].open&&i!=='board');
+  $$('[data-id]').forEach(c=>{c.classList.toggle('dim',!ids.includes(c.dataset.id));c.classList.toggle('match',ids.includes(c.dataset.id))})}
+$('#q').addEventListener('input',e=>{const v=e.target.value.trim().toLowerCase();$$('.chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.f==='all'&&!v)));
+  $$('[data-id]').forEach(c=>{const p=P[c.dataset.id];const hit=!v||(p.n+' '+p.t+' '+(p.aka||'')).toLowerCase().includes(v);c.classList.toggle('dim',!hit);c.classList.toggle('match',!!v&&hit)})});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const h=$$('.match[data-id]')[0];if(h)open(h.dataset.id)}});
+
+/* ---------- orbit ---------- */
+const ORB={justice:[0,0],john:[1,270],board:[1,330],david:[1,210],celine:[2,180],cyril:[2,0],luther:[3,205],venunye:[3,180],mkt:[3,155],marc:[3,-28],oko:[3,0],gabriel:[3,28],wisdom:[3,56],data:[3,84]};
+const RAD=[0,230,370,530],C=590;let built=false;
+const xy=id=>{const[r,a]=ORB[id];const t=a*Math.PI/180;return{x:C+RAD[r]*Math.cos(t),y:C+RAD[r]*Math.sin(t)}};
+function buildOrbit(){if(built)return;built=true;const sv=$('#owires');let h='<g class="spin">';[1,2,3].forEach(i=>h+='<circle class="ring" cx="'+C+'" cy="'+C+'" r="'+RAD[i]+'"/>');h+='</g>';
+  ['','Leadership and advisory','Department heads','Teams'].forEach((l,i)=>{if(i)h+='<text class="ringlbl" x="'+(C+8)+'" y="'+(C+RAD[i]-8)+'">'+l+'</text>'});
+  Object.entries(P).forEach(([id,p])=>{const link=(a,cls)=>{const A=xy(a),B=xy(id);const mx=(A.x+B.x)/2,my=(A.y+B.y)/2;h+='<path class="'+cls+'" data-a="'+a+'" data-b="'+id+'" d="M'+A.x+' '+A.y+' Q'+(mx+(mx-C)*.12)+' '+(my+(my-C)*.12)+' '+B.x+' '+B.y+'"/>'};
+    if(p.to)link(p.to,'rep');(p.adv||[]).forEach(a=>{if(a==='justice')link(a,'adv')})});
+  sv.innerHTML=h;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)pulses(sv);
+  let d=0;Object.entries(P).forEach(([id,p])=>{const{x,y}=xy(id);const s=id==='justice'?110:id==='john'?90:(['celine','cyril'].includes(id)?78:62);const b=document.createElement('button');b.className='onode'+(p.open&&id!=='board'?' open':'');b.dataset.id=id;
+    b.style.cssText='left:'+x+'px;top:'+(y-s/2)+'px;--s:'+s+'px;--c:'+col(id)+';--d:'+(d++*.07)+'s';b.innerHTML='<span class="ob">'+(id==='board'?'BD':p.open?'+':ini(p.n))+'</span><span class="on">'+p.n+'</span><span class="ot">'+p.t+'</span>';bind(b,id);$('#ospin').append(b)})}
+function fitOrbit(){const r=$('#vp').getBoundingClientRect();const k=Math.min(1,Math.min(r.width,r.height)/1300);$('#ospin').style.transform='scale('+k+') translate(-590px,-590px)'}
+function view(v){document.body.classList.toggle('is-orbit',v==='orbit');$('#bTree').setAttribute('aria-pressed',String(v!=='orbit'));$('#bOrb').setAttribute('aria-pressed',String(v==='orbit'));if(v==='orbit'){buildOrbit();fitOrbit()}else{fit();wires()}}
+$('#bTree').addEventListener('click',()=>view('tree'));$('#bOrb').addEventListener('click',()=>view('orbit'));
+
+/* ---------- fit and init ---------- */
+const vp=$('#vp');
+function fit(){if(window.innerWidth<=980){stage.style.zoom='';return}stage.style.zoom='1';const need=stage.scrollWidth,have=vp.clientWidth-6;stage.style.zoom=need>have?String(Math.max(.55,have/need)):'1'}
+fit();window.addEventListener('resize',()=>{fit();wires();if(document.body.classList.contains('is-orbit'))fitOrbit()});
+new ResizeObserver(()=>wires()).observe(stage);
+window.addEventListener('load',wires);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{fit();wires()});
+})();
+</script>
+</body>
+</html>
